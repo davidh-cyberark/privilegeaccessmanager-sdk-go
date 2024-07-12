@@ -1,0 +1,11 @@
+# example id tenant url
+idtenanturl = "https://YOUR-TENANT.id.cyberark.cloud"
+
+# example Privilege Cloud url
+pcloudurl = "https://YOUR-SUBDOMAIN.privilegecloud.cyberark.cloud"
+
+# PAM Service Account User
+user = "PAM_SERVICE_ACCOUNT_USER"
+
+# PAM Service Account User's password
+pass = "PAM_SERVICE_ACCOUNT_USER_PASSWORD"
