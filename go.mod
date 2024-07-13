@@ -1,4 +1,4 @@
-module github.com/davidh-cyberark/privilegeaccessmanager-sdk-go/v1
+module github.com/davidh-cyberark/privilegeaccessmanager-sdk-go
 
 go 1.22.5
 

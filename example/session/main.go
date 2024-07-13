@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/davidh-cyberark/privilegeaccessmanager-sdk-go/v1/pam"
+	"github.com/davidh-cyberark/privilegeaccessmanager-sdk-go/pam"
 	"github.com/knadh/koanf/parsers/toml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
