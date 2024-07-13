@@ -1,6 +1,6 @@
 module github.com/davidh-cyberark/privilegeaccessmanager-sdk-go
 
-go 1.22.5
+go 1.22
 
 require (
 	github.com/knadh/koanf/parsers/toml v0.1.0
