@@ -18,7 +18,10 @@ pass = "PAM_SERVICE_ACCOUNT_USER password"
 */
 func main() {
 	k := koanf.New(".")
-	k.Load(file.Provider("../../creds.toml"), toml.Parser())
+	err := k.Load(file.Provider("creds.toml"), toml.Parser())
+	if err != nil {
+		log.Fatalf("failed to load creds.toml: %s", err.Error())
+	}
 
 	config := pam.NewConfig(k.String("idtenanturl"), k.String("pcloudurl"), k.String("user"), k.String("pass"))
 	client := pam.NewClient(k.String("pcloudurl"), config)
