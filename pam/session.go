@@ -26,6 +26,15 @@ type IDTenantResponse struct {
 	ErrorDescription string `json:"error_description,omitempty"`
 }
 
+type ErrorResponse struct {
+	ErrorCode    string `json:"ErrorCode,omitempty"`
+	ErrorMessage string `json:"ErrorMessage,omitempty"`
+}
+
+func (er ErrorResponse) Error() string {
+	return fmt.Sprintf("Error: %s: %s", er.ErrorCode, er.ErrorMessage)
+}
+
 func NewSession(options ...func(*Session) error) *Session {
 	session := Session{
 		Token:      "",
@@ -77,6 +86,10 @@ func (c *Client) GetSession() (*Session, int, error) {
 		log.Fatalf("failed to parse json body for platform token: %s\n", err.Error())
 	}
 
+	if idresp.Error != "" {
+		return nil, response.StatusCode, fmt.Errorf("error getting token: (%s) %s", idresp.Error, idresp.ErrorDescription)
+	}
+
 	sess := Session{
 		Token:      idresp.AccessToken,
 		TokenType:  idresp.TokenType,
@@ -86,7 +99,10 @@ func (c *Client) GetSession() (*Session, int, error) {
 }
 
 func (c *Client) RefreshSession() error {
-	var err error
-	c.Session, _, err = c.GetSession()
+	session, status, err := c.GetSession()
+	if err == nil && status >= 300 {
+		err = fmt.Errorf("failed to get session token: %d", status)
+	}
+	c.Session = session
 	return err
 }

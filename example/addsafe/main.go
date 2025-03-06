@@ -25,7 +25,10 @@ func main() {
 
 	config := pam.NewConfig(k.String("idtenanturl"), k.String("pcloudurl"), k.String("user"), k.String("pass"))
 	client := pam.NewClient(k.String("pcloudurl"), config)
-	client.RefreshSession()
+	err = client.RefreshSession()
+	if err != nil {
+		log.Fatalf("Error: could not refresh session: %s", err.Error())
+	}
 
 	newsafe := pam.PostAddSafeRequest{
 		SafeName:    "my-new-safe-1",    // required
