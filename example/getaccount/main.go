@@ -1,8 +1,15 @@
 package main
 
+// https://docs.cyberark.com/pam-self-hosted/latest/en/content/webservices/get+account+details.htm
+
+// The user who runs this web service requires List Accounts permissions in
+// the Safe where the account is located inside the Vault.
+
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/davidh-cyberark/privilegeaccessmanager-sdk-go/pam"
 	"github.com/knadh/koanf/parsers/toml"
@@ -18,6 +25,12 @@ user = "PAM_SERVICE_ACCOUNT_USER"
 pass = "PAM_SERVICE_ACCOUNT_USER password"
 */
 func main() {
+
+	if len(os.Args) < 2 {
+		log.Fatalf("Usage: %s <account_id>", os.Args[0])
+	}
+	acctid := os.Args[1]
+
 	k := koanf.New(".")
 	err := k.Load(file.Provider("creds.toml"), toml.Parser())
 	if err != nil {
@@ -28,18 +41,15 @@ func main() {
 	client := pam.NewClient(k.String("pcloudurl"), config)
 	client.RefreshSession()
 
-	newaccount := pam.PostAddAccountRequest{
-		Name:       "mynewaccount1",
-		SafeName:   "my-new-safe-1", // required
-		PlatformID: "UnixSSH",
-		Address:    "127.0.0.1",
-		UserName:   "oscar",
-	}
-
-	resp, respcode, err := client.AddAccount(newaccount)
+	resp, respcode, err := client.GetAccount(acctid)
 	if err != nil {
 		log.Fatalf("Error: could not add account: (%d) %s", respcode, err.Error())
 	}
 
-	fmt.Printf("New Account ID: %s\n", resp.ID)
+	jsonData, err := json.Marshal(resp)
+	if err != nil {
+		log.Fatalf("Error marshaling response to JSON: %s", err.Error())
+	}
+	// fmt.Println("Account data:")
+	fmt.Println(string(jsonData))
 }
